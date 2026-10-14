@@ -20,6 +20,7 @@ class TaskType(models.Model):
     name = models.CharField(
         max_length=100, unique=True
     )
+
     class Meta:
         ordering = ["name"]
 
@@ -28,7 +29,7 @@ class TaskType(models.Model):
 
 
 class Worker(AbstractUser):
-    position=models.ForeignKey(
+    position = models.ForeignKey(
         Position,
         on_delete=models.CASCADE,
         related_name="workers",

@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 100
+inline-quotes = double
+exclude = .git,__pycache__,venv,.venv,*/migrations/*
+per-file-ignores =
+    config/settings.py:E501

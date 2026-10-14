@@ -1,3 +1,24 @@
-.idea
-.venv
-**__pycache__
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Django
+db.sqlite3
+*.log
+staticfiles/
+media/
+
+# Secrets
+.env
+
+# Tests / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDEs / OS
+.idea/
+.vscode/
+.DS_Store

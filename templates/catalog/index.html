@@ -3,5 +3,40 @@
 {% block title %}Home | IT Task Manager{% endblock %}
 
 {% block content %}
-  <h1 class="h3">Welcome, {{ user.first_name|default:user.username }}!</h1>
+  <h1 class="h3 mb-4">Welcome, {{ user.first_name|default:user.username }}!</h1>
+  <div class="row g-3">
+    <div class="col-6 col-md">
+      <div class="card text-center">
+        <div class="card-body">
+          <div class="display-6">{{ num_workers }}</div>
+          <div class="text-muted">Workers</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="card text-center">
+        <div class="card-body">
+          <div class="display-6">{{ num_tasks }}</div>
+          <div class="text-muted">Tasks</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="card text-center">
+        <div class="card-body">
+          <div class="display-6">{{ num_completed }}</div>
+          <div class="text-muted">Completed</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md">
+      <div class="card text-center">
+        <div class="card-body">
+          <div class="display-6">{{ num_pending }}</div>
+          <div class="text-muted">Pending</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="text-muted mt-4">Number of visits: {{ num_visits }}</p>
 {% endblock %}

@@ -17,7 +17,10 @@ from catalog.views import (
     PositionListView,
     PositionCreateView,
     PositionUpdateView,
-    PositionDeleteView, TaskTypeCreateView
+    PositionDeleteView,
+    TaskTypeCreateView,
+    TaskToggleAssigneeView,
+    TaskToggleCompletedView
 )
 
 app_name = "catalog"
@@ -29,6 +32,16 @@ urlpatterns = [
     path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
     path("tasks/<int:pk>/update", TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete", TaskDeleteView.as_view(), name="task-delete"),
+    path(
+        "tasks/<int:pk>/toggle-assign/",
+        TaskToggleAssigneeView.as_view(),
+        name="task-toggle-assign"
+    ),
+    path(
+        "tasks/<int:pk>/toggle-complete/",
+        TaskToggleCompletedView.as_view(),
+        name="task-toggle-complete"
+    ),
     path("workers/", WorkerListView.as_view(), name="worker-list"),
     path("workers/create", WorkerCreateView.as_view(), name="worker-create"),
     path("workers/<int:pk>/", WorkerDetailView.as_view(), name="worker-detail"),

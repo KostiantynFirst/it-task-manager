@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 
 class Position(models.Model):
@@ -79,3 +80,7 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.priority})"
+
+    @property
+    def is_overdue(self):
+        return not self.is_completed and self.deadline < timezone.localdate()

@@ -1,0 +1,9 @@
+{% if priority == "Urgent" %}
+  <span class="badge text-bg-danger">{{ priority }}</span>
+{% elif priority == "High" %}
+  <span class="badge text-bg-warning">{{ priority }}</span>
+{% elif priority == "Medium" %}
+  <span class="badge text-bg-primary">{{ priority }}</span>
+{% else %}
+  <span class="badge text-bg-secondary">{{ priority }}</span>
+{% endif %}

@@ -1,0 +1,8 @@
+{% if task.is_completed %}
+  <span class="badge text-bg-success">Completed</span>
+{% else %}
+  <span class="badge text-bg-light border">Pending</span>
+  {% if task.is_overdue %}
+    <span class="badge text-bg-danger">Overdue</span>
+  {% endif %}
+{% endif %}

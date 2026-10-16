@@ -18,5 +18,7 @@
     <dt class="col-sm-3">Position</dt>
     <dd class="col-sm-9">{{ worker.position|default:"-" }}</dd>
   </dl>
+  {% include "includes/worker_task_table.html" with tasks=pending_tasks title="Pending tasks" %}
+  {% include "includes/worker_task_table.html" with tasks=completed_tasks title="Completed tasks" %}
   <a href="{% url 'catalog:worker-list' %}">&larr; Back to workers</a>
 {% endblock %}

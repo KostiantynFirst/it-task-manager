@@ -22,7 +22,7 @@
       </thead>
       <tbody>
         {% for task in task_list %}
-          <tr>
+          <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
             <td><a href="{% url 'catalog:task-detail' task.pk %}">{{ task.name }}</a></td>
             <td>{{ task.task_type }}</td>
             <td>{{ task.priority }}</td>

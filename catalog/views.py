@@ -1,9 +1,9 @@
 from functools import cached_property
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -99,6 +99,11 @@ class TaskListView(SearchListView):
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     queryset = Task.objects.select_related("task_type").prefetch_related("assignees")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_assigned"] = self.request.user in self.object.assignees.all()
+        return context
+
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
@@ -126,6 +131,13 @@ class WorkerListView(SearchListView):
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     queryset = Worker.objects.select_related("position")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tasks = self.object.tasks.select_related("task_type")
+        context["completed_tasks"] = tasks.filter(is_completed=True)
+        context["pending_tasks"] = tasks.filter(is_completed=False)
+        return context
 
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
@@ -175,6 +187,24 @@ class TaskTypeDeleteView(ProtectedDeleteView):
     model = TaskType
     template_name = "catalog/entity_confirm_delete.html"
     success_url = reverse_lazy("catalog:task-type-list")
+
+
+class TaskToggleAssigneeView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        if task.assignees.filter(pk=request.user.pk).exists():
+            task.assignees.remove(request.user)
+        else:
+            task.assignees.add(request.user)
+        return redirect("catalog:task-detail", pk=pk)
+
+
+class TaskToggleCompletedView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        task.is_completed = not task.is_completed
+        task.save(update_fields=["is_completed"])
+        return redirect("catalog:task-detail", pk=pk)
 
 
 class PositionListView(SearchListView):

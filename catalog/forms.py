@@ -1,8 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
-
 from catalog.models import Task, Worker
+
+
+def search_input(placeholder):
+    return forms.TextInput(
+        attrs={"class": "form-control", "placeholder": placeholder}
+    )
 
 
 class TaskForm(forms.ModelForm):
@@ -49,3 +54,44 @@ class WorkerUpdateForm(forms.ModelForm):
             "email",
             "position",
         )
+
+
+class TaskSearchForm(forms.Form):
+    STATUS_CHOICES = (("", "All statuses"), ("completed", "Completed"), ("pending", "Pending"),)
+
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=search_input("Search by name"),
+    )
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        required=False,
+        label="",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    priority = forms.ChoiceField(
+        choices=[("", "All priorities")] + list(Task.Priority.choices),
+        required=False,
+        label="",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
+
+class WorkerSearchForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        required=False,
+        label="",
+        widget=search_input("Search by username"),
+    )
+
+
+class NameSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=search_input("Search by name"),
+    )

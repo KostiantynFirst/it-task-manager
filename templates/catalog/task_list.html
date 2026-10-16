@@ -7,6 +7,7 @@
     <h1 class="h3 mb-0">Tasks</h1>
     <a href="{% url 'catalog:task-create' %}" class="btn btn-primary">New task</a>
   </div>
+  {% include "includes/search_form.html" %}
   {% if task_list %}
     <table class="table table-hover align-middle">
       <thead>
@@ -36,7 +37,8 @@
         {% endfor %}
       </tbody>
     </table>
+  {% include "includes/pagination.html" %}
   {% else %}
-    <p>There are no tasks yet.</p>
+    <p>No tasks found.</p>
   {% endif %}
 {% endblock %}

@@ -31,7 +31,7 @@ class TaskType(models.Model):
 class Worker(AbstractUser):
     position = models.ForeignKey(
         Position,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="workers",
         null=True,
         blank=True,

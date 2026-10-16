@@ -6,6 +6,15 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'catalog:task-list' %}">Tasks</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:worker-list' %}">Workers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:task-type-list' %}">Task types</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'catalog:position-list' %}">Positions</a>
+        </li>
       </ul>
       <div class="d-flex align-items-center gap-3">
         <span class="navbar-text">{{ user.username }}</span>

@@ -1,10 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<aside id="sidebar" class="sidebar collapse d-lg-flex flex-column p-3">
+  <a class="sidebar-brand d-none d-lg-flex align-items-center mb-4"
+     href="{% url 'catalog:index' %}">
+    <i class="bi bi-kanban fs-3 me-2"></i>
+    <span class="fs-5 fw-semibold">IT Task Manager</span>
+  </a>
+
+  <ul class="nav nav-pills flex-column gap-1 mb-auto">
+    <li class="nav-item">
+      <a class="nav-link {% if request.path == '/' %}active{% endif %}"
+         href="{% url 'catalog:index' %}">
+        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if '/tasks/' in request.path %}active{% endif %}"
+         href="{% url 'catalog:task-list' %}">
+        <i class="bi bi-check2-square me-2"></i>Tasks
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if '/workers/' in request.path %}active{% endif %}"
+         href="{% url 'catalog:worker-list' %}">
+        <i class="bi bi-people me-2"></i>Workers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if '/task-types/' in request.path %}active{% endif %}"
+         href="{% url 'catalog:task-type-list' %}">
+        <i class="bi bi-tags me-2"></i>Task types
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if '/positions/' in request.path %}active{% endif %}"
+         href="{% url 'catalog:position-list' %}">
+        <i class="bi bi-briefcase me-2"></i>Positions
+      </a>
+    </li>
+  </ul>
+
+  <hr class="border-secondary">
+  <div class="sidebar-user d-flex align-items-center">
+    <i class="bi bi-person-circle fs-4 me-2"></i>
+    <a class="flex-grow-1 text-truncate" href="{{ user.get_absolute_url }}">{{ user.username }}</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-outline-light" title="Log out">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </form>
+  </div>
+</aside>

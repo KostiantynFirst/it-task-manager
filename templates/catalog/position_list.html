@@ -4,12 +4,16 @@
 
 {% block content %}
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Positions</h1>
+    <h1 class="h3 fw-semibold mb-0">
+      Positions
+    </h1>
     <a href="{% url 'catalog:position-create' %}" class="btn btn-primary">New position</a>
   </div>
   {% include "includes/search_form.html" %}
   {% if position_list %}
-    <table class="table table-hover align-middle">
+    <div class="card shadow-sm">
+    <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
       <thead>
         <tr>
           <th>Name</th>
@@ -28,8 +32,12 @@
         {% endfor %}
       </tbody>
     </table>
+    </div>
+    </div>
     {% include "includes/pagination.html" %}
   {% else %}
-    <p>No positions found.</p>
+    <div class="card card-body text-center text-muted shadow-sm">
+    No positions found.
+    </div>
   {% endif %}
 {% endblock %}

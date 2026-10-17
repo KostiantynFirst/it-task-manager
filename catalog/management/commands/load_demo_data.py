@@ -147,7 +147,7 @@ TASKS = [
 
 
 class Command(BaseCommand):
-    help = "Load demo positions, task types, workers and tasks."
+    help = "Load demo positions, task types, workers and tasks."  # noqa: VNE003
 
     def handle(self, *_args, **_options):
         positions = self.create_positions()

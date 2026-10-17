@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% if object %}Edit{% else %}New{% endif %} {{ entity }}{% endblock %}
+{% block title %}{% if object %}Edit task{% else %}New task{% endif %}{% endblock %}
 
 {% block content %}
-  <h1 class="h3 mb-4">{% if object %}Edit{% else %}New{% endif %} {{ entity }}</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a href="{{ view.success_url }}" class="btn btn-secondary">Cancel</a>
-  </form>
+  <h1 class="h3 fw-semibold mb-3">{% if object %}Edit task{% else %}New task{% endif %}</h1>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'catalog:task-list' %}" class="btn btn-outline-secondary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -25,9 +25,9 @@
           <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
             <td><a href="{% url 'catalog:task-detail' task.pk %}">{{ task.name }}</a></td>
             <td>{{ task.task_type }}</td>
-            <td>{{ task.priority }}</td>
+            <td>{% include "includes/priority_badge.html" with priority=task.priority %}</td>
             <td>{{ task.deadline }}</td>
-            <td>{% if task.is_completed %}Completed{% else %}Pending{% endif %}</td>
+            <td>{% include "includes/task_status.html" %}</td>
             <td>
               {% for worker in task.assignees.all %}
                 {{ worker.username }}{% if not forloop.last %}, {% endif %}

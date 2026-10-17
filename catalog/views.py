@@ -50,7 +50,7 @@ class SearchListView(LoginRequiredMixin, generic.ListView):
             search_term = self.search_form.cleaned_data[self.search_param]
             if search_term:
                 queryset = queryset.filter(**{self.search_lookup: search_term})
-            return queryset
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

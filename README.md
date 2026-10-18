@@ -1,6 +1,6 @@
 # IT Task Manager
 
-![CI](https://github.com/<your-username>/<repo-name>/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/KostiantynFirst/it-task-manager/actions/workflows/ci.yml/badge.svg)
 
 A web application for IT companies where team members (developers, designers,
 project managers, QA engineers, DevOps) create tasks, assign them to colleagues

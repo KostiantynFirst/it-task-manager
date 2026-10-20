@@ -27,6 +27,7 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 - **Django admin** configured for all models, with a custom `UserAdmin` for `Worker` that includes the position field.
 - **Query optimization**: `select_related` and `prefetch_related` on list pages to avoid N+1 queries.
 - **Demo data** management command, **tests** with 100% coverage and a **GitHub Actions** workflow (flake8 and tests).
+- Existing overdue tasks can still be edited as long as their deadline is not moved to a past date.
 
 ## Tech stack
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -80,6 +81,22 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.priority})"
+
+    def clean(self):
+        super().clean()
+        if self.deadline is None or self.deadline >= timezone.localdate():
+            return
+        saved_deadline = None
+        if self.pk:
+            saved_deadline = (
+                Task.objects.filter(pk=self.pk)
+                .values_list("deadline", flat=True)
+                .first()
+            )
+        if self.deadline != saved_deadline:
+            raise ValidationError(
+                {"deadline": "Deadline cannot be earlier than today."}
+            )
 
     @property
     def is_overdue(self):

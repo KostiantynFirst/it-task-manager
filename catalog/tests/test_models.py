@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError
 from django.db.models import ProtectedError
 from django.urls import reverse
 
@@ -80,3 +81,31 @@ class TaskModelTests(BaseTestCase):
     def test_task_with_future_deadline_is_not_overdue(self):
         task = self.create_task(deadline=self.today + timedelta(days=1))
         self.assertFalse(task.is_overdue)
+
+
+class TaskDeadlineValidationTests(BaseTestCase):
+    def build_task(self, deadline):
+        return Task(
+            name="Check",
+            description="Text",
+            deadline=deadline,
+            task_type=self.task_type,
+        )
+
+    def test_new_task_with_past_deadline_is_invalid(self):
+        with self.assertRaises(ValidationError):
+            self.build_task(self.today - timedelta(days=1)).full_clean()
+
+    def test_new_task_due_today_is_valid(self):
+        self.build_task(self.today).full_clean()
+
+    def test_saved_overdue_task_stays_valid_when_deadline_unchanged(self):
+        task = self.create_task(deadline=self.today - timedelta(days=2))
+        task.name = "Renamed"
+        task.full_clean()
+
+    def test_moving_deadline_to_the_past_is_invalid(self):
+        task = self.create_task()
+        task.deadline = self.today - timedelta(days=1)
+        with self.assertRaises(ValidationError):
+            task.full_clean()

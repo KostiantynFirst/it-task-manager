@@ -31,7 +31,7 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 ## Tech stack
 
 - Python 3.14
-- Django 5.x
+- Django 5.2
 - SQLite (development)
 - Bootstrap 5 and Bootstrap Icons (via CDN)
 - django-crispy-forms with crispy-bootstrap5
@@ -67,54 +67,74 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 
 1. Clone the repository and open the project folder:
 
-   ```bash
+```bash
    git clone https://github.com/<your-username>/<repo-name>.git
    cd <repo-name>
-   ```
+```
 
 2. Create and activate a virtual environment:
 
-   ```bash
+```bash
    python -m venv .venv
-   ```
+```
 
    Windows (PowerShell):
 
-   ```powershell
+```powershell
    .venv\Scripts\Activate.ps1
-   ```
+```
 
    Linux / macOS:
 
-   ```bash
+```bash
    source .venv/bin/activate
-   ```
+```
 
 3. Install the dependencies:
 
-   ```bash
+```bash
    pip install -r requirements.txt
-   ```
+```
 
-4. Apply the migrations:
+4. Create the environment file and set your own secret key:
 
-   ```bash
+   Windows (PowerShell):
+
+```powershell
+   Copy-Item .env.example .env
+```
+
+   Linux / macOS:
+
+```bash
+   cp .env.example .env
+```
+
+   Generate a key and paste it into `.env` as the value of `SECRET_KEY`:
+
+```bash
+   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+5. Apply the migrations:
+
+```bash
    python manage.py migrate
-   ```
+```
 
-5. Load the demo data (positions, task types, workers and tasks):
+6. Load the demo data (positions, task types, workers and tasks):
 
-   ```bash
+```bash
    python manage.py load_demo_data
-   ```
+```
 
-6. Run the development server:
+7. Run the development server:
 
-   ```bash
+```bash
    python manage.py runserver
-   ```
+```
 
-7. Open http://127.0.0.1:8000/ and log in with one of the demo accounts below.
+8. Open http://127.0.0.1:8000/ and log in with one of the demo accounts below.
 
 ## Demo credentials
 
@@ -146,7 +166,7 @@ and pull request through GitHub Actions (`.github/workflows/ci.yml`).
 ## Project structure
 
 ```text
-config/                     project settings and root URL configuration
+it_task_manager/                     project settings and root URL configuration
 catalog/
     management/commands/    load_demo_data command
     tests/                  tests for models, views, forms and the demo data command
@@ -162,6 +182,5 @@ docs/                       database schema and screenshots
 
 ## Notes
 
-This is a development setup: `SECRET_KEY` and `DEBUG` are defined in `config/settings.py`
-and the project uses SQLite. Move them to environment variables and switch to PostgreSQL
+This is a development setup that uses SQLite. Move them to environment variables and switch to PostgreSQL
 before deploying to production.

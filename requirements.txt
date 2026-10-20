@@ -6,3 +6,4 @@ pep8-naming
 django-crispy-forms
 crispy-bootstrap5
 coverage
+python-decouple

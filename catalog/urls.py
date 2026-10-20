@@ -19,8 +19,10 @@ from catalog.views import (
     PositionUpdateView,
     PositionDeleteView,
     TaskTypeCreateView,
-    TaskToggleAssigneeView,
-    TaskToggleCompletedView
+    TaskAssignMeView,
+    TaskUnassignMeView,
+    TaskCompleteView,
+    TaskReopenView
 )
 
 app_name = "catalog"
@@ -32,16 +34,18 @@ urlpatterns = [
     path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
     path("tasks/<int:pk>/update/", TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
+    path("tasks/<int:pk>/assign/", TaskAssignMeView.as_view(), name="task-assign"),
     path(
-        "tasks/<int:pk>/toggle-assign/",
-        TaskToggleAssigneeView.as_view(),
-        name="task-toggle-assign"
+        "tasks/<int:pk>/unassign/",
+        TaskUnassignMeView.as_view(),
+        name="task-unassign",
     ),
     path(
-        "tasks/<int:pk>/toggle-complete/",
-        TaskToggleCompletedView.as_view(),
-        name="task-toggle-complete"
+        "tasks/<int:pk>/complete/",
+        TaskCompleteView.as_view(),
+        name="task-complete",
     ),
+    path("tasks/<int:pk>/reopen/", TaskReopenView.as_view(), name="task-reopen"),
     path("workers/", WorkerListView.as_view(), name="worker-list"),
     path("workers/create/", WorkerCreateView.as_view(), name="worker-create"),
     path("workers/<int:pk>/", WorkerDetailView.as_view(), name="worker-detail"),

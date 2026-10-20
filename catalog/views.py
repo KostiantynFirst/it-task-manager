@@ -122,6 +122,38 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("catalog:task-list")
 
 
+class TaskActionView(LoginRequiredMixin, generic.View):
+    """POST-only action that sets an explicit target state."""
+
+    def apply(self, task):
+        raise NotImplementedError
+
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        self.apply(task)
+        return redirect("catalog:task-detail", pk=pk)
+
+
+class TaskAssignMeView(TaskActionView):
+    def apply(self, task):
+        task.assignees.add(self.request.user)
+
+
+class TaskUnassignMeView(TaskActionView):
+    def apply(self, task):
+        task.assignees.remove(self.request.user)
+
+
+class TaskCompleteView(TaskActionView):
+    def apply(self, task):
+        Task.objects.filter(pk=task.pk).update(is_completed=True)
+
+
+class TaskReopenView(TaskActionView):
+    def apply(self, task):
+        Task.objects.filter(pk=task.pk).update(is_completed=False)
+
+
 class WorkerListView(SearchListView):
     queryset = Worker.objects.select_related("position")
     search_form_class = WorkerSearchForm
@@ -187,24 +219,6 @@ class TaskTypeDeleteView(ProtectedDeleteView):
     model = TaskType
     template_name = "catalog/entity_confirm_delete.html"
     success_url = reverse_lazy("catalog:task-type-list")
-
-
-class TaskToggleAssigneeView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
-        task = get_object_or_404(Task, pk=pk)
-        if task.assignees.filter(pk=request.user.pk).exists():
-            task.assignees.remove(request.user)
-        else:
-            task.assignees.add(request.user)
-        return redirect("catalog:task-detail", pk=pk)
-
-
-class TaskToggleCompletedView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
-        task = get_object_or_404(Task, pk=pk)
-        task.is_completed = not task.is_completed
-        task.save(update_fields=["is_completed"])
-        return redirect("catalog:task-detail", pk=pk)
 
 
 class PositionListView(SearchListView):

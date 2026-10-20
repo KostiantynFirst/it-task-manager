@@ -16,7 +16,7 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
   - Deadline validation: a new task cannot have a deadline earlier than today, and an existing deadline cannot be moved to the past.
   - Several assignees can be selected with checkboxes in the task form.
   - "Assign me to this task" / "Remove me from this task" button on the task page.
-  - A button to toggle a task between completed and not completed.
+  - Buttons to mark a task as completed or not completed.
 - **Workers**: list, detail, create, update and delete. The detail page shows two separate lists: pending and completed tasks of the worker.
 - **Task types** and **positions**: list, create, update and delete. Items that are still in use cannot be deleted, and a message is shown instead of an error page.
 - **Search, filters and pagination** (5 items per page) on every list page:

@@ -31,7 +31,7 @@ class AnonymousAccessTests(BaseTestCase):
 
     def test_task_actions_require_login(self):
         task = self.create_task()
-        for url_name in ("catalog:task-toggle-assign", "catalog:task-toggle-complete"):
+        for url_name in ("catalog:task-assign", "catalog:task-complete"):
             with self.subTest(url_name=url_name):
                 response = self.client.post(reverse(url_name, args=[task.pk]))
                 self.assertEqual(response.status_code, 302)

@@ -17,20 +17,28 @@
 
   <div class="card shadow-sm mb-3">
     <div class="card-body d-flex flex-wrap gap-2">
-      <form method="post" action="{% url 'catalog:task-toggle-assign' task.pk %}">
-        {% csrf_token %}
-        {% if is_assigned %}
+      {% if is_assigned %}
+        <form method="post" action="{% url 'catalog:task-unassign' task.pk %}">
+          {% csrf_token %}
           <button type="submit" class="btn btn-outline-warning">Remove me from this task</button>
-        {% else %}
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'catalog:task-assign' task.pk %}">
+          {% csrf_token %}
           <button type="submit" class="btn btn-success">Assign me to this task</button>
-        {% endif %}
-      </form>
-      <form method="post" action="{% url 'catalog:task-toggle-complete' task.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">
-          {% if task.is_completed %}Mark as not completed{% else %}Mark as completed{% endif %}
-        </button>
-      </form>
+        </form>
+      {% endif %}
+      {% if task.is_completed %}
+        <form method="post" action="{% url 'catalog:task-reopen' task.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Mark as not completed</button>
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'catalog:task-complete' task.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Mark as completed</button>
+        </form>
+      {% endif %}
     </div>
   </div>
 

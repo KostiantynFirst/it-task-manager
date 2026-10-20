@@ -72,6 +72,8 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
    cd <repo-name>
 ```
 
+
+
 2. Create and activate a virtual environment:
 
 ```bash
@@ -90,11 +92,15 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
    source .venv/bin/activate
 ```
 
+
+
 3. Install the dependencies:
 
 ```bash
    pip install -r requirements.txt
 ```
+
+
 
 4. Create the environment file and set your own secret key:
 
@@ -116,11 +122,15 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
    python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
+
+
 5. Apply the migrations:
 
 ```bash
    python manage.py migrate
 ```
+
+
 
 6. Load the demo data (positions, task types, workers and tasks):
 
@@ -128,11 +138,15 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
    python manage.py load_demo_data
 ```
 
+
+
 7. Run the development server:
 
 ```bash
    python manage.py runserver
 ```
+
+
 
 8. Open http://127.0.0.1:8000/ and log in with one of the demo accounts below.
 
@@ -182,5 +196,6 @@ docs/                       database schema and screenshots
 
 ## Notes
 
-This is a development setup that uses SQLite. Move them to environment variables and switch to PostgreSQL
-before deploying to production.
+This is a development setup that uses SQLite. Before deploying to production,
+switch to PostgreSQL, set `DEBUG=False`, generate a unique `SECRET_KEY` and
+list your domain names in `ALLOWED_HOSTS` in the `.env` file.

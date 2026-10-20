@@ -150,6 +150,36 @@ class WorkerCrudTests(LoggedInTestCase):
         self.assertEqual(list(response.context["pending_tasks"]), [pending_task])
         self.assertEqual(list(response.context["completed_tasks"]), [completed_task])
 
+    def test_create_worker_without_position_is_rejected(self):
+        response = self.client.post(
+            reverse("catalog:worker-create"),
+            self.build_creation_data(position=""),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("position", response.context["form"].errors)
+        self.assertFalse(Worker.objects.filter(username="anna").exists())
+
+    def test_update_worker_without_position_is_rejected(self):
+        worker = Worker.objects.create_user(
+            username="anna",
+            password=PASSWORD,
+            position=self.position,
+        )
+        response = self.client.post(
+            reverse("catalog:worker-update", args=[worker.pk]),
+            {
+                "username": "anna",
+                "first_name": "Anna",
+                "last_name": "Smith",
+                "email": "anna@example.com",
+                "position": "",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("position", response.context["form"].errors)
+        worker.refresh_from_db()
+        self.assertEqual(worker.position, self.position)
+
 
 class TaskTypeCrudTests(LoggedInTestCase):
     def test_create_task_type(self):

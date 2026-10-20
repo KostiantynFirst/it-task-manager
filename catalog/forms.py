@@ -9,6 +9,12 @@ def search_input(placeholder):
     )
 
 
+class PositionRequiredMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["position"].required = True
+
+
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
@@ -26,7 +32,7 @@ class TaskForm(forms.ModelForm):
         }
 
 
-class WorkerCreationForm(UserCreationForm):
+class WorkerCreationForm(PositionRequiredMixin, UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Worker
         fields = UserCreationForm.Meta.fields + (
@@ -37,7 +43,7 @@ class WorkerCreationForm(UserCreationForm):
         )
 
 
-class WorkerUpdateForm(forms.ModelForm):
+class WorkerUpdateForm(PositionRequiredMixin, forms.ModelForm):
     class Meta:
         model = Worker
         fields = (

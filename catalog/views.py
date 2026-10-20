@@ -36,7 +36,7 @@ class ProtectedDeleteView(LoginRequiredMixin, generic.DeleteView):
 class SearchListView(LoginRequiredMixin, generic.ListView):
 
     paginate_by = 5
-    search_form_class = None
+    search_form_class = NameSearchForm
     search_param = "name"
     search_lookup = "name__icontains"
 

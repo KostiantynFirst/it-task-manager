@@ -190,7 +190,7 @@ and pull request through GitHub Actions (`.github/workflows/ci.yml`).
 
 ```text
 it_task_manager/                     project settings and root URL configuration
-    settings/                        base.py (shared settings), dev.py 
+    settings/                        base.py (shared settings), dev.py (development)
 catalog/
     management/commands/    load_demo_data command
     tests/                  tests for models, views, forms and the demo data command
@@ -208,4 +208,6 @@ docs/                       database schema and screenshots
 
 This is a development setup that uses SQLite. Before deploying to production,
 switch to PostgreSQL, set `DEBUG=False`, generate a unique `SECRET_KEY` and
-list your domain names in `ALLOWED_HOSTS` in the `.env` file. A separate production settings module is not included yet.
+list your domain names in `ALLOWED_HOSTS` in the `.env` file. 
+
+A separate production settings module is not included yet.

@@ -93,6 +93,10 @@ class MemberPermissionTests(BaseTestCase):
                     response, reverse(f"catalog:{prefix}-delete", args=[obj.pk])
                 )
 
+    def test_member_cannot_delete_worker(self):
+        self.client.post(reverse("catalog:worker-delete", args=[self.worker.pk]))
+        self.assertTrue(Worker.objects.filter(pk=self.worker.pk).exists())
+
 
 class StaffInterfaceTests(LoggedInTestCase):
     def test_staff_sees_manage_buttons(self):

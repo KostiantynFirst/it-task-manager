@@ -1,7 +1,7 @@
 from functools import cached_property
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import ProtectedError
+from django.db.models import Count, ProtectedError, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -47,20 +47,13 @@ class SearchListView(LoginRequiredMixin, generic.ListView):
 
     paginate_by = 5
     search_form_class = NameSearchForm
-    search_param = "name"
-    search_lookup = "name__icontains"
 
     @cached_property
     def search_form(self):
         return self.search_form_class(self.request.GET)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.search_form.is_valid():
-            search_term = self.search_form.cleaned_data[self.search_param]
-            if search_term:
-                queryset = queryset.filter(**{self.search_lookup: search_term})
-        return queryset
+        return self.search_form.filter_queryset(super().get_queryset())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,11 +71,14 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         num_visits = self.request.session.get("num_visits", 0) + 1
         self.request.session["num_visits"] = num_visits
+        task_stats = Task.objects.aggregate(
+            num_tasks=Count("pk"),
+            num_completed=Count("pk", filter=Q(is_completed=True)),
+            num_pending=Count("pk", filter=Q(is_completed=False)),
+        )
         context.update(
+            task_stats,
             num_workers=Worker.objects.count(),
-            num_tasks=Task.objects.count(),
-            num_completed=Task.objects.filter(is_completed=True).count(),
-            num_pending=Task.objects.filter(is_completed=False).count(),
             num_visits=num_visits,
         )
         return context
@@ -91,19 +87,6 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
 class TaskListView(SearchListView):
     queryset = Task.objects.select_related("task_type").prefetch_related("assignees")
     search_form_class = TaskSearchForm
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.search_form.is_valid():
-            status = self.search_form.cleaned_data["status"]
-            priority = self.search_form.cleaned_data["priority"]
-            if status == "completed":
-                queryset = queryset.filter(is_completed=True)
-            elif status == "pending":
-                queryset = queryset.filter(is_completed=False)
-            if priority:
-                queryset = queryset.filter(priority=priority)
-        return queryset
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
@@ -170,8 +153,6 @@ class TaskReopenView(StaffOrAssigneeRequiredMixin, TaskActionView):
 class WorkerListView(SearchListView):
     queryset = Worker.objects.select_related("position")
     search_form_class = WorkerSearchForm
-    search_param = "username"
-    search_lookup = "username__icontains"
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):

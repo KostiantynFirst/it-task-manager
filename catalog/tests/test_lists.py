@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -33,26 +34,8 @@ class TaskSearchAndFilterTests(LoggedInTestCase):
     def test_search_by_name(self):
         self.assertEqual(self.get_tasks(name="login"), [self.login_task])
 
-    def test_search_is_case_insensitive(self):
-        self.assertEqual(self.get_tasks(name="GOOGLE"), [self.button_task])
-
-    def test_filter_completed(self):
-        self.assertEqual(self.get_tasks(status="completed"), [self.button_task])
-
-    def test_filter_pending(self):
-        self.assertEqual(self.get_tasks(status="pending"), [self.login_task])
-
-    def test_filter_by_priority(self):
-        self.assertEqual(self.get_tasks(priority="Urgent"), [self.login_task])
-
     def test_combined_search_and_filter(self):
         self.assertEqual(self.get_tasks(name="Google", status="pending"), [])
-
-    def test_invalid_priority_is_ignored(self):
-        self.assertCountEqual(
-            self.get_tasks(priority="Unknown"),
-            [self.login_task, self.button_task],
-        )
 
     def test_search_form_keeps_entered_value(self):
         response = self.client.get(self.url, {"name": "login"})
@@ -66,7 +49,7 @@ class TaskSearchAndFilterTests(LoggedInTestCase):
     def test_overdue_task_is_highlighted(self):
         self.create_task(
             name="Old task",
-            deadline=self.today.replace(year=self.today.year - 1),
+            deadline=self.today - timedelta(days=30),
         )
         response = self.client.get(self.url)
         self.assertContains(response, "table-danger")

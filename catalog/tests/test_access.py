@@ -20,8 +20,16 @@ class AnonymousAccessTests(BaseTestCase):
             reverse("catalog:worker-list"),
             reverse("catalog:worker-create"),
             reverse("catalog:worker-detail", args=[self.worker.pk]),
+            reverse("catalog:worker-update", args=[self.worker.pk]),
+            reverse("catalog:worker-delete", args=[self.worker.pk]),
             reverse("catalog:task-type-list"),
+            reverse("catalog:task-type-create"),
+            reverse("catalog:task-type-update", args=[self.task_type.pk]),
+            reverse("catalog:task-type-delete", args=[self.task_type.pk]),
             reverse("catalog:position-list"),
+            reverse("catalog:position-create"),
+            reverse("catalog:position-update", args=[self.position.pk]),
+            reverse("catalog:position-delete", args=[self.position.pk]),
         ]
         login_url = reverse("login")
         for url in urls:

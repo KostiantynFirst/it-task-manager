@@ -15,10 +15,20 @@ from catalog.forms import (
     WorkerSearchForm,
     WorkerUpdateForm,
 )
-from catalog.models import Worker, Task, TaskType, Position
+from catalog.models import (
+    Worker,
+    Task,
+    TaskType,
+    Position
+)
+from catalog.mixins import (
+    StaffOrAssigneeRequiredMixin,
+    StaffOrSelfRequiredMixin,
+    StaffRequiredMixin,
+)
 
 
-class ProtectedDeleteView(LoginRequiredMixin, generic.DeleteView):
+class ProtectedDeleteView(StaffRequiredMixin, generic.DeleteView):
 
     template_name = "catalog/entity_confirm_delete.html"
 
@@ -101,7 +111,10 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["is_assigned"] = self.request.user in self.object.assignees.all()
+        user = self.request.user
+        is_assigned = user in self.object.assignees.all()
+        context["is_assigned"] = is_assigned
+        context["can_edit"] = user.is_staff or is_assigned
         return context
 
 
@@ -111,13 +124,13 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("catalog:task-list")
 
 
-class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TaskUpdateView(StaffOrAssigneeRequiredMixin, generic.UpdateView):
     model = Task
     form_class = TaskForm
     success_url = reverse_lazy("catalog:task-list")
 
 
-class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+class TaskDeleteView(StaffRequiredMixin, generic.DeleteView):
     model = Task
     success_url = reverse_lazy("catalog:task-list")
 
@@ -144,12 +157,12 @@ class TaskUnassignMeView(TaskActionView):
         task.assignees.remove(self.request.user)
 
 
-class TaskCompleteView(TaskActionView):
+class TaskCompleteView(StaffOrAssigneeRequiredMixin, TaskActionView):
     def apply(self, task):
         Task.objects.filter(pk=task.pk).update(is_completed=True)
 
 
-class TaskReopenView(TaskActionView):
+class TaskReopenView(StaffOrAssigneeRequiredMixin, TaskActionView):
     def apply(self, task):
         Task.objects.filter(pk=task.pk).update(is_completed=False)
 
@@ -172,7 +185,7 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
-class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
+class WorkerCreateView(StaffRequiredMixin, generic.CreateView):
     model = Worker
     form_class = WorkerCreationForm
     template_name = "catalog/entity_form.html"
@@ -180,7 +193,7 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("catalog:worker-list")
 
 
-class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+class WorkerUpdateView(StaffOrSelfRequiredMixin, generic.UpdateView):
     model = Worker
     form_class = WorkerUpdateForm
     template_name = "catalog/entity_form.html"
@@ -188,10 +201,19 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("catalog:worker-list")
 
 
-class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
+class WorkerDeleteView(StaffRequiredMixin, generic.DeleteView):
     model = Worker
     template_name = "catalog/entity_confirm_delete.html"
     success_url = reverse_lazy("catalog:worker-list")
+
+    def form_valid(self, form):
+        if self.object.tasks.exists():
+            messages.error(
+                self.request,
+                f"Cannot delete {self.object}: the worker is assigned to tasks."
+            )
+            return redirect("catalog:worker-detail", pk=self.object.pk)
+        return super().form_valid(form)
 
 
 class TaskTypeListView(SearchListView):
@@ -199,7 +221,7 @@ class TaskTypeListView(SearchListView):
     search_form_class = NameSearchForm
 
 
-class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
+class TaskTypeCreateView(StaffRequiredMixin, generic.CreateView):
     model = TaskType
     fields = ("name",)
     template_name = "catalog/entity_form.html"
@@ -207,7 +229,7 @@ class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("catalog:task-type-list")
 
 
-class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TaskTypeUpdateView(StaffRequiredMixin, generic.UpdateView):
     model = TaskType
     fields = ("name",)
     template_name = "catalog/entity_form.html"
@@ -217,7 +239,6 @@ class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class TaskTypeDeleteView(ProtectedDeleteView):
     model = TaskType
-    template_name = "catalog/entity_confirm_delete.html"
     success_url = reverse_lazy("catalog:task-type-list")
 
 
@@ -226,7 +247,7 @@ class PositionListView(SearchListView):
     search_form_class = NameSearchForm
 
 
-class PositionCreateView(LoginRequiredMixin, generic.CreateView):
+class PositionCreateView(StaffRequiredMixin, generic.CreateView):
     model = Position
     fields = ("name",)
     template_name = "catalog/entity_form.html"
@@ -234,7 +255,7 @@ class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("catalog:position-list")
 
 
-class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+class PositionUpdateView(StaffRequiredMixin, generic.UpdateView):
     model = Position
     fields = ("name",)
     template_name = "catalog/entity_form.html"
@@ -244,5 +265,4 @@ class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class PositionDeleteView(ProtectedDeleteView):
     model = Position
-    template_name = "catalog/entity_confirm_delete.html"
     success_url = reverse_lazy("catalog:position-list")

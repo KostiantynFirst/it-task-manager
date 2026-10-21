@@ -17,6 +17,7 @@ WORKERS = [
         "first_name": "Alice",
         "last_name": "Johnson",
         "position": "Project Manager",
+        "is_staff": True,
     },
     {
         "username": "bob",
@@ -49,6 +50,7 @@ ADMIN = {
     "first_name": "Admin",
     "last_name": "User",
     "position": "Project Manager",
+    "is_staff": True,
 }
 
 # days_left: deadline relative to today (negative means already overdue)
@@ -187,9 +189,8 @@ class Command(BaseCommand):
             )
             if created:
                 worker.set_password(DEMO_PASSWORD)
-                if worker_spec is ADMIN:
-                    worker.is_staff = True
-                    worker.is_superuser = True
+                worker.is_staff = worker_spec.get("is_staff", False)
+                worker.is_superuser = worker_spec is ADMIN
                 worker.save()
             workers[username] = worker
         return workers

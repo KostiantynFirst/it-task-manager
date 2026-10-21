@@ -7,7 +7,9 @@
     <h1 class="h3 fw-semibold mb-0">
       Positions
     </h1>
-    <a href="{% url 'catalog:position-create' %}" class="btn btn-primary">New position</a>
+    {% if user.is_staff %}
+      <a href="{% url 'catalog:position-create' %}" class="btn btn-primary">New position</a>
+    {% endif %}
   </div>
   {% include "includes/search_form.html" %}
   {% if position_list %}
@@ -17,17 +19,19 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th></th>
+          {% if user.is_staff %}<th></th>{% endif %}
         </tr>
       </thead>
       <tbody>
         {% for position in position_list %}
           <tr>
             <td>{{ position.name }}</td>
-            <td class="text-end">
-              <a href="{% url 'catalog:position-update' position.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-              <a href="{% url 'catalog:position-delete' position.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-            </td>
+            {% if user.is_staff %}
+              <td class="text-end">
+                <a href="{% url 'catalog:position-update' position.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'catalog:position-delete' position.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              </td>
+          {% endif %}
           </tr>
         {% endfor %}
       </tbody>

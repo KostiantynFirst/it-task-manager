@@ -5,7 +5,9 @@
 {% block content %}
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 fw-semibold mb-0">Workers</h1>
-    <a href="{% url 'catalog:worker-create' %}" class="btn btn-primary">New worker</a>
+    {% if user.is_staff %}
+      <a href="{% url 'catalog:worker-create' %}" class="btn btn-primary">New worker</a>
+    {% endif %}
   </div>
   {% include "includes/search_form.html" %}
   {% if worker_list %}

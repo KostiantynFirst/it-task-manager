@@ -181,6 +181,27 @@ class WorkerCrudTests(LoggedInTestCase):
         self.assertEqual(worker.position, self.position)
 
 
+class WorkerDeleteProtectionTests(LoggedInTestCase):
+    def setUp(self):
+        super().setUp()
+        self.other = Worker.objects.create_user(
+            username="other",
+            password=PASSWORD,
+            position=self.position,
+        )
+        self.url = reverse("catalog:worker-delete", args=[self.other.pk])
+
+    def test_worker_with_tasks_is_not_deleted(self):
+        self.create_task().assignees.add(self.other)
+        response = self.client.post(self.url, follow=True)
+        self.assertTrue(Worker.objects.filter(pk=self.other.pk).exists())
+        self.assertContains(response, "assigned to tasks")
+
+    def test_worker_without_tasks_is_deleted(self):
+        self.client.post(self.url)
+        self.assertFalse(Worker.objects.filter(pk=self.other.pk).exists())
+
+
 class TaskTypeCrudTests(LoggedInTestCase):
     def test_create_task_type(self):
         response = self.client.post(

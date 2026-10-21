@@ -36,3 +36,9 @@ class LoadDemoDataTests(TestCase):
     def test_admin_is_superuser(self):
         self.run_command()
         self.assertTrue(Worker.objects.get(username="admin").is_superuser)
+
+    def test_only_alice_and_admin_are_staff(self):
+        self.run_command()
+        self.assertTrue(Worker.objects.get(username="alice").is_staff)
+        self.assertTrue(Worker.objects.get(username="admin").is_staff)
+        self.assertFalse(Worker.objects.get(username="bob").is_staff)

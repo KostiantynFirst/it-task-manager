@@ -17,7 +17,8 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
   - Several assignees can be selected with checkboxes in the task form.
   - "Assign me to this task" / "Remove me from this task" button on the task page.
   - Buttons to mark a task as completed or not completed.
-- **Workers**: list, detail, create, update and delete. The detail page shows two separate lists: pending and completed tasks of the worker.
+  - Existing overdue tasks can still be edited as long as their deadline is not moved to a past date.
+- **Workers**: list, detail, create, update and delete. The detail page shows two separate lists: pending and completed tasks of the worker. A worker who is assigned to tasks cannot be deleted.
 - **Task types** and **positions**: list, create, update and delete. Items that are still in use cannot be deleted, and a message is shown instead of an error page.
 - **Search, filters and pagination** (5 items per page) on every list page:
   - tasks are searched by name and filtered by status and priority;
@@ -26,8 +27,8 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
   - search and filter parameters are preserved when switching pages.
 - **Django admin** configured for all models, with a custom `UserAdmin` for `Worker` that includes the position field.
 - **Query optimization**: `select_related` and `prefetch_related` on list pages to avoid N+1 queries.
-- **Demo data** management command, **tests** with 100% coverage and a **GitHub Actions** workflow (flake8 and tests).
-- Existing overdue tasks can still be edited as long as their deadline is not moved to a past date.
+- **Demo data** management command, **tests** with under 90% coverage and a **GitHub Actions** workflow (flake8 and tests).
+  
 
 ## Tech stack
 
@@ -40,9 +41,6 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 - coverage
 - GitHub Actions
 
-## Screenshots
-
-> Add screenshots of the pages to `docs/screenshots/` and keep the links below.
 
 | Page | Screenshot |
 |------|------------|
@@ -69,8 +67,8 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 1. Clone the repository and open the project folder:
 
 ```bash
-   git clone https://github.com/<your-username>/<repo-name>.git
-   cd <repo-name>
+   git clone https://github.com/KostiantynFirst/it-task-manager.git
+   cd it-task-manager
 ```
 
 
@@ -157,14 +155,24 @@ All demo accounts share the same password: `demo12345`.
 
 | Username | Role in the demo | Notes |
 |----------|------------------|-------|
-| `admin` | Project Manager | Superuser, can also log in to `/admin/` |
-| `alice` | Project Manager | |
-| `bob` | Developer | |
-| `carol` | QA | |
-| `dave` | DevOps | |
-| `eve` | Designer | |
+| `admin` | Project Manager | Superuser and staff, can also log in to `/admin/` |
+| `alice` | Project Manager | Staff: can manage tasks, workers, task types and positions |
+| `bob` | Developer | Regular user |
+| `carol` | QA | Regular user |
+| `dave` | DevOps | Regular user |
+| `eve` | Designer | Regular user |
 
 These accounts are meant for local demonstration only.
+
+## Permissions
+
+| Action | Who can do it |
+|--------|---------------|
+| View pages, create tasks, assign or unassign yourself | any logged-in user |
+| Edit a task, mark it as completed or not completed | staff or an assignee of the task |
+| Delete a task | staff only |
+| Create or delete workers; manage task types and positions | staff only |
+| Edit a worker | staff or the worker themselves |
 
 ## Running tests and checks
 

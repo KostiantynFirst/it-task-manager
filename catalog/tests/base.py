@@ -19,6 +19,7 @@ class BaseTestCase(TestCase):
             first_name="John",
             last_name="Doe",
             position=cls.position,
+            is_staff=True,
         )
         cls.today = timezone.localdate()
 

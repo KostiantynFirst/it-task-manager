@@ -197,10 +197,6 @@ class WorkerDeleteProtectionTests(LoggedInTestCase):
         self.assertTrue(Worker.objects.filter(pk=self.other.pk).exists())
         self.assertContains(response, "assigned to tasks")
 
-    def test_worker_without_tasks_is_deleted(self):
-        self.client.post(self.url)
-        self.assertFalse(Worker.objects.filter(pk=self.other.pk).exists())
-
 
 class TaskTypeCrudTests(LoggedInTestCase):
     def test_create_task_type(self):

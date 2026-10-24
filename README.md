@@ -41,14 +41,12 @@ You can log in with one of the demo accounts (password for both: `demo12345`):
   - search and filter parameters are preserved when switching pages.
 - **Django admin** configured for all models, with a custom `UserAdmin` for `Worker` that includes the position field.
 - **Query optimization**: `select_related` and `prefetch_related` on list pages to avoid N+1 queries.
-- **Demo data** management command, **tests** with under 90% coverage and a **GitHub Actions** workflow (flake8 and tests).
-  
+-    - **Demo data** management command, **tests** and a **GitHub Actions** workflow (flake8 and tests).
 
 ## Tech stack
 
 - Python 3.14
 - Django 5.2
-- SQLite (development)
 - Bootstrap 5 and Bootstrap Icons (via CDN)
 - django-crispy-forms with crispy-bootstrap5
 - flake8 (with flake8-quotes, flake8-variables-names and pep8-naming)
@@ -58,6 +56,7 @@ You can log in with one of the demo accounts (password for both: `demo12345`):
 - Gunicorn and WhiteNoise
 - Render (hosting)
 
+## Screenshots
 
 | Page | Screenshot |
 |------|------------|
@@ -179,7 +178,7 @@ All demo accounts share the same password: `demo12345`.
 | `dave` | DevOps | Regular user |
 | `eve` | Designer | Regular user |
 
-These accounts are meant for local demonstration only.
+These accounts are created by the `load_demo_data` command and are also available on the live demo.
 
 ## Permissions
 

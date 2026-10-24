@@ -41,7 +41,7 @@ You can log in with one of the demo accounts (password for both: `demo12345`):
   - search and filter parameters are preserved when switching pages.
 - **Django admin** configured for all models, with a custom `UserAdmin` for `Worker` that includes the position field.
 - **Query optimization**: `select_related` and `prefetch_related` on list pages to avoid N+1 queries.
--    - **Demo data** management command, **tests** and a **GitHub Actions** workflow (flake8 and tests).
+- **Demo data** management command, **tests** and a **GitHub Actions** workflow (flake8 and tests).
 
 ## Tech stack
 

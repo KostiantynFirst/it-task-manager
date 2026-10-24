@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}{{ task.name }} | IT Task Manager{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 fw-semibold mb-0">{{ task.name }}</h1>
+    <div>
+      {% if can_edit %}
+        <a href="{% url 'catalog:task-update' task.pk %}" class="btn btn-outline-primary">
+          <i class="bi bi-pencil me-1"></i>Edit
+        </a>
+      {% endif %}
+      {% if user.is_staff %}
+        <a href="{% url 'catalog:task-delete' task.pk %}" class="btn btn-outline-danger">
+          <i class="bi bi-trash me-1"></i>Delete
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body d-flex flex-wrap gap-2">
+      {% if is_assigned %}
+        <form method="post" action="{% url 'catalog:task-unassign' task.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-warning">Remove me from this task</button>
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'catalog:task-assign' task.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success">Assign me to this task</button>
+        </form>
+      {% endif %}
+      {% if can_edit %}
+        {% if task.is_completed %}
+          <form method="post" action="{% url 'catalog:task-reopen' task.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Mark as not completed</button>
+          </form>
+        {% else %}
+          <form method="post" action="{% url 'catalog:task-complete' task.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Mark as completed</button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">{{ task.description|linebreaksbr }}</dd>
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">{{ task.task_type }}</dd>
+        <dt class="col-sm-3">Priority</dt>
+        <dd class="col-sm-9">{% include "includes/priority_badge.html" with priority=task.priority %}</dd>
+        <dt class="col-sm-3">Deadline</dt>
+        <dd class="col-sm-9">{{ task.deadline }}</dd>
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">{% include "includes/task_status.html" %}</dd>
+        <dt class="col-sm-3">Assignees</dt>
+        <dd class="col-sm-9">
+          {% for worker in task.assignees.all %}
+            <a href="{{ worker.get_absolute_url }}" class="badge text-bg-light border fw-normal text-decoration-none">{{ worker.username }}</a>
+          {% empty %}
+            Nobody is assigned yet.
+          {% endfor %}
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <a href="{% url 'catalog:task-list' %}" class="d-inline-block mt-3">&larr; Back to tasks</a>
+{% endblock %}

@@ -1,0 +1,102 @@
+:root {
+  --sidebar-width: 260px;
+  --sidebar-bg: #1e2433;
+  --page-bg: #f4f6fb;
+}
+
+body {
+  background-color: var(--page-bg);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+dt {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--sidebar-bg);
+  color: #cbd2e1;
+}
+
+.sidebar a {
+  text-decoration: none;
+}
+
+.sidebar-brand,
+.sidebar-user a {
+  color: #fff;
+}
+
+.sidebar .nav-link {
+  color: #cbd2e1;
+  border-radius: 0.5rem;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--bs-primary);
+  color: #fff;
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    overflow-y: auto;
+  }
+
+  .main {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* Cards and tables */
+.card {
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+.table thead th {
+  background-color: #f8f9fc;
+  color: #6b7280;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.85rem 1rem;
+}
+
+.table a {
+  text-decoration: none;
+}
+
+.table a:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard counters */
+.stat-icon {
+  align-items: center;
+  border-radius: 0.75rem;
+  display: flex;
+  font-size: 1.4rem;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+
+/* Login page */
+.auth-card {
+  max-width: 420px;
+}

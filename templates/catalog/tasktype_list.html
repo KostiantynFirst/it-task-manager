@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Task types | IT Task Manager{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 fw-semibold mb-0">Task types</h1>
+    {% if user.is_staff %}
+      <a href="{% url 'catalog:task-type-create' %}" class="btn btn-primary">New task type</a>
+    {% endif %}
+  </div>
+  {% include "includes/search_form.html" %}
+  {% if tasktype_list %}
+    <div class="card shadow-sm">
+    <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          {% if user.is_staff %}<th></th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for task_type in tasktype_list %}
+          <tr>
+            <td>{{ task_type.name }}</td>
+            {% if user.is_staff %}
+              <td class="text-end">
+                <a href="{% url 'catalog:task-type-update' task_type.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'catalog:task-type-delete' task_type.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              </td>
+          {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    </div>
+    {% include "includes/pagination.html" %}
+  {% else %}
+    <div class="card card-body text-center text-muted shadow-sm">
+    No task types found.
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+<h2 class="h5 fw-semibold mt-4 mb-3">{{ title }} ({{ tasks|length }})</h2>
+{% if tasks %}
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Priority</th>
+            <th>Deadline</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+            <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
+              <td><a href="{% url 'catalog:task-detail' task.pk %}">{{ task.name }}</a></td>
+              <td>{{ task.task_type }}</td>
+              <td>{% include "includes/priority_badge.html" with priority=task.priority %}</td>
+              <td>{{ task.deadline }}</td>
+              <td>{% include "includes/task_status.html" %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted">No tasks.</p>
+{% endif %}

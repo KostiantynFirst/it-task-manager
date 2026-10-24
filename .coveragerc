@@ -1,0 +1,5 @@
+[run]
+source = catalog
+omit =
+    */migrations/*
+    */tests/*

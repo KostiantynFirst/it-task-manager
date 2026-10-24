@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ worker.username }} | IT Task Manager{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">{{ worker.username }}</h1>
+    <div>
+      {% if user.is_staff or user.pk == worker.pk %}
+        <a href="{% url 'catalog:worker-update' worker.pk %}" class="btn btn-outline-primary">Edit</a>
+      {% endif %}
+      {% if user.is_staff %}
+        <a href="{% url 'catalog:worker-delete' worker.pk %}" class="btn btn-outline-danger">Delete</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body p-4">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">{{ worker.get_full_name|default:"-" }}</dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">{{ worker.email|default:"-" }}</dd>
+        <dt class="col-sm-3">Position</dt>
+        <dd class="col-sm-9">{{ worker.position|default:"-" }}</dd>
+      </dl>
+    </div>
+  </div>
+  {% include "includes/worker_task_table.html" with tasks=pending_tasks title="Pending tasks" %}
+  {% include "includes/worker_task_table.html" with tasks=completed_tasks title="Completed tasks" %}
+    <a href="{% url 'catalog:worker-list' %}" class="d-inline-block mt-3">&larr; Back to workers</a>
+{% endblock %}

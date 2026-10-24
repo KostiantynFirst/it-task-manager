@@ -1,0 +1,14 @@
+{% extends "base_auth.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Log in | IT Task Manager{% endblock %}
+
+{% block content %}
+  <h2 class="h5 mb-3">Log in to your account</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-primary w-100">Log in</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,13 @@
+django>=5.2.8,<6.0
+flake8
+flake8-quotes
+flake8-variables-names
+pep8-naming
+django-crispy-forms
+crispy-bootstrap5
+coverage
+python-decouple
+gunicorn
+whitenoise
+dj-database-url
+psycopg[binary]

@@ -42,3 +42,13 @@ class LoadDemoDataTests(TestCase):
         self.assertTrue(Worker.objects.get(username="alice").is_staff)
         self.assertTrue(Worker.objects.get(username="admin").is_staff)
         self.assertFalse(Worker.objects.get(username="bob").is_staff)
+
+    def test_no_admin_option_skips_admin(self):
+        call_command("load_demo_data", "--no-admin", stdout=StringIO())
+        self.assertFalse(Worker.objects.filter(username="admin").exists())
+        self.assertEqual(Worker.objects.count(), 5)
+
+    def test_no_admin_option_removes_existing_admin(self):
+        self.run_command()
+        call_command("load_demo_data", "--no-admin", stdout=StringIO())
+        self.assertFalse(Worker.objects.filter(username="admin").exists())

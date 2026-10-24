@@ -151,11 +151,23 @@ TASKS = [
 class Command(BaseCommand):
     help = "Load demo positions, task types, workers and tasks."  # noqa: VNE003
 
-    def handle(self, *_args, **_options):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--no-admin",
+            action="store_true",
+            help="Do not create the demo superuser and remove it if it exists.",
+        )
+
+    def handle(self, *_args, **options):
+        no_admin = options["no_admin"]
         positions = self.create_positions()
         task_types = self.create_task_types()
-        workers = self.create_workers(positions)
+        workers = self.create_workers(positions, include_admin=not no_admin)
         self.create_tasks(task_types, workers)
+        if no_admin:
+            Worker.objects.filter(
+                username=ADMIN["username"], is_superuser=True
+            ).delete()
         self.stdout.write(self.style.SUCCESS("Demo data loaded."))
         self.stdout.write(f"Demo password for all accounts: {DEMO_PASSWORD}")
 
@@ -174,9 +186,10 @@ class Command(BaseCommand):
         }
 
     @staticmethod
-    def create_workers(positions):
+    def create_workers(positions, include_admin=True):
         workers = {}
-        for worker_spec in [ADMIN] + WORKERS:
+        specs = ([ADMIN] if include_admin else []) + WORKERS
+        for worker_spec in specs:
             username = worker_spec["username"]
             worker, created = Worker.objects.get_or_create(
                 username=username,

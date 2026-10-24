@@ -6,6 +6,20 @@ A web application for IT companies where team members (developers, designers,
 project managers, QA engineers, DevOps) create tasks, assign them to colleagues
 and mark them as completed. The project is built with Django and Bootstrap 5.
 
+## Live demo
+
+The application is deployed on Render: https://it-task-manager-h1qa.onrender.com
+
+You can log in with one of the demo accounts (password for both: `demo12345`):
+
+| Username | Role | What you can do |
+|----------|------|-----------------|
+| `alice` | Staff (Project Manager) | Manage tasks, workers, task types and positions |
+| `bob` | Regular user (Developer) | View everything, create tasks, assign yourself, edit and complete your own tasks |
+
+> The site runs on a free Render plan, so the first request after a period of
+> inactivity can take up to a minute while the service wakes up.
+
 ## Features
 
 - **Authentication**: login and logout; every page except the login page requires authentication.
@@ -40,6 +54,9 @@ and mark them as completed. The project is built with Django and Bootstrap 5.
 - flake8 (with flake8-quotes, flake8-variables-names and pep8-naming)
 - coverage
 - GitHub Actions
+- PostgreSQL (Neon) in production, SQLite in development
+- Gunicorn and WhiteNoise
+- Render (hosting)
 
 
 | Page | Screenshot |
@@ -174,6 +191,26 @@ These accounts are meant for local demonstration only.
 | Create or delete workers; manage task types and positions | staff only |
 | Edit a worker | staff or the worker themselves |
 
+## Deployment
+
+The project is deployed on [Render](https://render.com) with a PostgreSQL database on [Neon](https://neon.tech).
+
+- Build command: `./build.sh` (installs dependencies, collects static files, applies migrations and loads the demo data)
+- Start command: `gunicorn it_task_manager.wsgi:application`
+- Settings module: `it_task_manager.settings.prod`
+- Static files are served by WhiteNoise.
+
+Environment variables required on Render:
+
+| Variable | Description |
+|----------|-------------|
+| `DJANGO_SETTINGS_MODULE` | `it_task_manager.settings.prod` |
+| `DATABASE_URL` | Connection string of the Neon PostgreSQL database |
+| `SECRET_KEY` | A long random secret key |
+
+`RENDER_EXTERNAL_HOSTNAME` is set by Render automatically and is used for `ALLOWED_HOSTS`
+and `CSRF_TRUSTED_ORIGINS`.
+
 ## Running tests and checks
 
 ```bash
@@ -189,8 +226,8 @@ and pull request through GitHub Actions (`.github/workflows/ci.yml`).
 ## Project structure
 
 ```text
-it_task_manager/                     project settings and root URL configuration
-    settings/                        base.py (shared settings), dev.py (development)
+it_task_manager/            project settings and root URL configuration
+    settings/               base.py (shared settings), dev.py (development), prod.py (production)
 catalog/
     management/commands/    load_demo_data command
     tests/                  tests for models, views, forms and the demo data command
@@ -202,12 +239,10 @@ catalog/
 templates/                  base layouts, includes and per-entity templates
 static/css/                 custom styles
 docs/                       database schema and screenshots
+build.sh                    build script used on Render
 ```
 
 ## Notes
 
-This is a development setup that uses SQLite. Before deploying to production,
-switch to PostgreSQL, set `DEBUG=False`, generate a unique `SECRET_KEY` and
-list your domain names in `ALLOWED_HOSTS` in the `.env` file. 
-
-A separate production settings module is not included yet.
+Locally the project uses `dev` settings with SQLite (`manage.py` selects them by default).
+The `prod` settings use PostgreSQL through the `DATABASE_URL` environment variable.

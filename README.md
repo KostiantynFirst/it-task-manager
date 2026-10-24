@@ -171,7 +171,7 @@ All demo accounts share the same password: `demo12345`.
 
 | Username | Role in the demo | Notes |
 |----------|------------------|-------|
-| `admin` | Project Manager | Superuser and staff, can also log in to `/admin/` |
+| `admin` | Project Manager | Superuser and staff, can also log in to `/admin/` (local setup only, not created on the live demo) |
 | `alice` | Project Manager | Staff: can manage tasks, workers, task types and positions |
 | `bob` | Developer | Regular user |
 | `carol` | QA | Regular user |
@@ -194,7 +194,7 @@ These accounts are created by the `load_demo_data` command and are also availabl
 
 The project is deployed on [Render](https://render.com) with a PostgreSQL database on [Neon](https://neon.tech).
 
-- Build command: `./build.sh` (installs dependencies, collects static files, applies migrations and loads the demo data)
+- Build command: `./build.sh` (installs dependencies, collects static files, applies migrations and loads the demo data without the `admin` superuser account)
 - Start command: `gunicorn it_task_manager.wsgi:application`
 - Settings module: `it_task_manager.settings.prod`
 - Static files are served by WhiteNoise.

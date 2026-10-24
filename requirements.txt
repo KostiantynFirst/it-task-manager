@@ -7,3 +7,7 @@ django-crispy-forms
 crispy-bootstrap5
 coverage
 python-decouple
+gunicorn
+whitenoise
+dj-database-url
+psycopg[binary]
